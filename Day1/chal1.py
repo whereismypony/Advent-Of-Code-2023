@@ -8,7 +8,7 @@ def getFirstInt(string):
     return re.search(r'\d+',string).group()
 
 # Read Input of input.txt
-with open('1\input.txt') as f:
+with open('Day1\input.txt') as f:
     lines = f.readlines()
 
     # Go through the rows 1 by 1
