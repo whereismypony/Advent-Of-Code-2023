@@ -1,36 +1,41 @@
 import re
 
-# array is like:
-#   y 0 1 2
-# x   
-# 0   . . *
-# 1   . 9 0
-# 2   . . .
+f = open("Day3/input.txt", "r")
+numPositions = []
+inputList = []
 
-# read file
-with open('Day3\input.txt') as f:
-    # make a list of the file, for every line an item and loop through them
-    lines = f.readlines()
-    for x in range(len(lines)):
-        for y in range(len(lines[x])):
-            print() 
-    
-    # use a for loop and look for a symbol 
+# Save each line into an array for  easier access
+lines = f.read().splitlines()
 
-    # get location of symbol in line
+# Checks if a symbol is in a rectangle box around each found digit
+def FindSymbols(startX:int, startY:int, lenght:int):
+    flag = False
+    # Checking the box, making sure not going out of bounds (looping to the other end of the array since python)
+    for i in range(-1,2):
+        #row = ''
+        for j in range(-1,lenght+1):
+            if(startY+i >= 0 and startY+i < len(inputList) and startX+j >= 0 and startX+j < len(inputList[startY+i])):
+                # Checks for symbols that aren't digits, . and \n 
+                if(re.match(r'[^\d\.\n]',inputList[startY+i][startX+j])):
+                    flag = True
+    return flag
 
-    # check if there is a number before or after the symbol
+# For every number we find, we store the position and the length (to make the box around it) and the value of the number to add it if it's valid
+for x in lines:
+    inputList.append(x)
+    tempList = []
+    # Regex for finding all sequences of digits 
+    for y in re.finditer(r"\d+",x):
+        z = [y.start(), int(y.end()-y.start()), int(y.group())]
+        tempList.append(z)
+    numPositions.append(tempList)
 
-    # go back a line and check if there is a number before or after the same position
+validNums = 0
 
-    # go forth a line and check if there is a number before or after the same position
-    
+# Adds all the valid numbers found
+for index, posRow in enumerate(numPositions):
+    for numInfo in posRow:
+        if(FindSymbols(numInfo[0], index, numInfo[1])):
+            validNums+=numInfo[2]
 
-    # using a [cursor_position] and [symbol_position]:
-    # make a check function that checks all surrounding positions if there is a number in it. If it finds one it can go on to the move left 
-    # or right functions to find the beginnen/end of the numbers. If a number is found first move as far left as possible.
-    # then note it down while going to the left. 
-
-    # make a look left function that goes on until it finds something else then a number
-    # make a look right function that takes the number under the cursor and adds it (as string) until it finds something else than a number
-
+print(validNums)
